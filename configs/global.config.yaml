@@ -1,0 +1,13 @@
+port: "8080"
+
+db:
+  username: "evocar_db_user"
+  host: "dpg-cuggv75ds78s73f7n4j0-a.frankfurt-postgres.render.com"
+  port: "5432"
+  dbname: "evocar_db"
+  sslmode: "require"
+
+rdb:
+  addr: "frankfurt-redis.render.com:6379"
+  username: "red-cugh37d2ng1s73ed7irg"
+  db: 0

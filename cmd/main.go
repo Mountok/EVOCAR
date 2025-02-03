@@ -29,7 +29,8 @@ func main() {
 		Host:     viper.GetString("db.host"),
 		Port:     viper.GetString("db.port"),
 		Username: viper.GetString("db.username"),
-		Password: os.Getenv("DB_PASSWORD"),
+		Password: os.Getenv("DB_PASSWORD_GB"),
+		// Password: os.Getenv("DB_PASSWORD_LC"),
 		DBName:   viper.GetString("db.dbname"),
 		SSLMode:  viper.GetString("db.sslmode"),
 	})
@@ -42,7 +43,8 @@ func main() {
 	client, err := cache.NewRedisClient(cache.Config{
 		Addr:     viper.GetString("rdb.addr"),
 		Username: viper.GetString("rdb.username"),
-		Password: viper.GetString("rdb.password"),
+		Password: os.Getenv("RDB_PASSWORD_GB"),
+		// Password: os.Getenv("RDB_PASSWORD_LC"),
 		DB:       0,
 	})
 	if err != nil {
@@ -63,6 +65,6 @@ func main() {
 
 func initConfig() error {
 	viper.AddConfigPath("configs")
-	viper.SetConfigName("config")
+	viper.SetConfigName("global.config")
 	return viper.ReadInConfig()
 }

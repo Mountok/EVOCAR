@@ -2,6 +2,7 @@ package cache
 
 import (
 	"context"
+	"crypto/tls"
 
 	"github.com/go-redis/redis/v8"
 )
@@ -19,6 +20,7 @@ func NewRedisClient(cfg Config) (*redis.Client, error) {
 		Username: cfg.Username,
 		Password: cfg.Password,
 		DB:       cfg.DB,
+		TLSConfig: &tls.Config{},
 	})
 	
 	_, err := client.Ping(context.Background()).Result()
