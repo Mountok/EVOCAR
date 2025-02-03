@@ -17,7 +17,7 @@ import (
 
 func main() {
 	if err := godotenv.Load(); err != nil {
-		log.Fatalf("Ошибка при загрузке переменных окружения .env: \n %s", err.Error())
+		log.Println("Ошибка при загрузке переменных окружения .env: \n %s", err.Error())
 	}
 
 	if err := initConfig(); err != nil {
