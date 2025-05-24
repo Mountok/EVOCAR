@@ -8,7 +8,7 @@
 
 Запуск контейрена:
 
-`docker run --name=evocar-db -e POSTGRES_PASSWORD='qwerty' -p 5436:5432 -d --rm postgres`
+`docker run --name=evocar-db -e POSTGRES_PASSWORD='qwerty' -p 5437:5432 -d --rm postgres`
 
 Убедимся что контейнер запущен: 
 
@@ -29,7 +29,7 @@
 
 Для миграции: 
 
-`migrate -path ./schema -database 'postgres://postgres:qwerty@localhost:5436/postgres?sslmode=disable' up`
+`migrate -path ./schema -database 'postgres://postgres:qwerty@localhost:5437/postgres?sslmode=disable' up`
 
 --- 
 ## Запус Redis
@@ -39,7 +39,7 @@
 
 Для запуска кеш базы данных:
 
-`docker run --name redis-server -d -p 6379:6379 redis`
+`docker run --name redis-server -d -p 6380:6379 redis`
 
 Подключение к контейнеру
 

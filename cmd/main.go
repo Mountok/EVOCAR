@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"os"
 	"todoapp"
 	"todoapp/pkg/cache"
@@ -11,46 +10,50 @@ import (
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
+	"github.com/sirupsen/logrus"
 
 	"github.com/spf13/viper"
 )
 
 func main() {
+
+	logrus.SetFormatter(new(logrus.JSONFormatter))
+	logrus.Infoln("Запуск сервера")
 	if err := godotenv.Load(); err != nil {
-		log.Println("Ошибка при загрузке переменных окружения .env: \n %s", err.Error())
+		logrus.Println("Ошибка при загрузке переменных окружения .env: \n %s", err.Error())
 	}
 
 	if err := initConfig(); err != nil {
-		log.Fatalf("Ошибка (viper) при инициализации конгфига .yaml: \n %s", err.Error())
+		logrus.Fatalf("Ошибка (viper) при инициализации конгфига .yaml: \n %s", err.Error())
 	}
-	log.Println("Конфиг YAML инициализирован")
+	logrus.Infoln("Конфиг YAML инициализирован")
 
 	db, err := repository.NewPostgresDB(repository.Config{
 		Host:     viper.GetString("db.host"),
 		Port:     viper.GetString("db.port"),
 		Username: viper.GetString("db.username"),
-		Password: os.Getenv("DB_PASSWORD_GB"),
-		// Password: os.Getenv("DB_PASSWORD_LC"),
+		// Password: os.Getenv("DB_PASSWORD_GB"),
+		Password: os.Getenv("DB_PASSWORD_LC"),
 		DBName:   viper.GetString("db.dbname"),
 		SSLMode:  viper.GetString("db.sslmode"),
 	})
 
 	if err != nil {
-		log.Fatalf("Ошибка при инициализации БД:\n %s ", err.Error())
+		logrus.Fatalf("Ошибка при инициализации БД:\n %s ", err.Error())
 	}
-	log.Println("База данных Postgers инициализирована")
+	logrus.Infoln("База данных Postgers инициализирована")
 
 	client, err := cache.NewRedisClient(cache.Config{
 		Addr:     viper.GetString("rdb.addr"),
 		Username: viper.GetString("rdb.username"),
-		Password: os.Getenv("RDB_PASSWORD_GB"),
-		// Password: os.Getenv("RDB_PASSWORD_LC"),
+		// Password: os.Getenv("RDB_PASSWORD_GB"),
+		Password: os.Getenv("rdb.password"),
 		DB:       0,
 	})
 	if err != nil {
-		log.Fatalf("Ошибка при инициализации Кеша:\n %s ", err.Error())
+		logrus.Fatalf("Ошибка при инициализации Кеша:\n %s ", err.Error())
 	}
-	log.Println("Клиент Redis инициализирован")
+	logrus.Infoln("Клиент Redis инициализирован")
 
 	repos := repository.NewRepository(db)    // SQL
 	caches := cache.NewCache(repos, client)  // Redis
@@ -59,12 +62,13 @@ func main() {
 
 	srv := new(todoapp.Server)
 	if err := srv.Run(os.Getenv("PORT"), handlers.InitRoute()); err != nil {
-		log.Fatalf("error occured while running http server: %s", err)
+		logrus.Fatalf("error occured while running http server: %s", err)
 	}
 }
 
 func initConfig() error {
 	viper.AddConfigPath("configs")
-	viper.SetConfigName("global.config")
+	viper.SetConfigName("config")
+	// viper.SetConfigName("global.config")
 	return viper.ReadInConfig()
 }

@@ -1,14 +1,14 @@
-port: "8080"
+port: "8090"
 
 db:
   username: "postgres"
   host: "localhost"
-  port: "5436"
+  port: "5437"
   dbname: "postgres"
   sslmode: "disable"
 
 rdb:
-  addr: "localhost:6379"
+  addr: "localhost:6380"
   username: ""
-  passoword: ""
+  password: ""
   db: 0

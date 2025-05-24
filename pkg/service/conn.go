@@ -10,7 +10,7 @@ func NewConnService(cache *cache.Cache) *ConnService {
 	return &ConnService{
 		cache: cache,
 	}
-}
+} 
 
 
 func (s *ConnService) Conn() bool {

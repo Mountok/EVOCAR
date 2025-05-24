@@ -6,6 +6,10 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+var (
+	usersTable = "users"
+)
+
 type Config struct {
 	Host     string
 	Port     string

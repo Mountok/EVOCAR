@@ -1,9 +1,12 @@
 package todoapp
 
 import (
-	"context"
 	"net/http"
 	"time"
+)
+
+import (
+	"context"
 )
 
 type Server struct {
