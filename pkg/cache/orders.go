@@ -9,7 +9,7 @@ import (
 )
 
 type OrderCache struct {
-	repos repository.Orders
+	repos       repository.Orders
 	redisClient *redis.Client
 }
 
@@ -44,12 +44,18 @@ func (c *OrderCache) CancleOrder(id string) error {
 	return c.repos.CancleOrder(id)
 }
 
-
-
-func (c *OrderCache) GetOrdersByPhoneNumber(phoneNumber string)  ([]models.Order, error) {
+func (c *OrderCache) GetOrdersByPhoneNumber(phoneNumber string) ([]models.Order, error) {
 	return c.repos.GetOrdersByPhoneNumber(phoneNumber)
 }
 
 func (c *OrderCache) GetExecutorsHistory(phoneNumber string) ([]models.Order, error) {
 	return c.repos.GetExecutorsHistory(phoneNumber)
+}
+
+func (c *OrderCache) CheckOrderStatus(orderId string) (string, error) {
+	return c.repos.CheckOrderStatus(orderId)
+}
+
+func (c *OrderCache) GetOrderExecutorById(id int) (models.ExecutorHistory, error) {
+	return c.repos.GetOrderExecutorById(id)
 }

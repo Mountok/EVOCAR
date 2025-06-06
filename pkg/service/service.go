@@ -5,7 +5,6 @@ import (
 	"todoapp/pkg/cache"
 )
 
-
 type Authorization interface {
 	CreateUser(user models.User) (userId int, err error)
 	GenerateToken(username, password string) (string, error)
@@ -21,10 +20,12 @@ type Order interface {
 	CreateOrder(order models.Order) (int, error)
 	AcceptOrder(id string, phoneNumber string) error
 	CompleteOrder(id string) error
-	GetOrdersByPhoneNumber(phoneNumber string)  ([]models.Order, error)
+	GetOrdersByPhoneNumber(phoneNumber string) ([]models.Order, error)
 	GetActiveOrders() ([]models.Order, error)
 	CancleOrder(id string) error
 	GetExecutorsHistory(phoneNumber string) ([]models.Order, error)
+	CheckOrderStatus(orderId string) (map[string]interface{}, error)
+	GetOrderExecutorById(id string) (models.ExecutorHistory, error)
 }
 
 type Service struct {
@@ -35,8 +36,8 @@ type Service struct {
 
 func NewService(cache *cache.Cache) *Service {
 	return &Service{
-		Conn: NewConnService(cache),
+		Conn:          NewConnService(cache),
 		Authorization: NewAuthService(cache),
-		Order: NewOrderService(cache),
+		Order:         NewOrderService(cache),
 	}
 }

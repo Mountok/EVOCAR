@@ -86,7 +86,7 @@ func (h *Handler) completeOrder(c *gin.Context) {
 	id := c.Param("id")
 	err := h.services.CompleteOrder(id)
 	if err != nil {
-		newErrorResponse(c,http.StatusInternalServerError,err.Error())
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 	wrapOkJSON(c, map[string]interface{}{
@@ -100,7 +100,7 @@ func (h *Handler) cancleOrder(c *gin.Context) {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	wrapOkJSON(c,map[string]interface{}{"message": "Заказ отменен"})
+	wrapOkJSON(c, map[string]interface{}{"message": "Заказ отменен"})
 }
 
 func (h *Handler) getOrdersByPhoneNumber(c *gin.Context) {
@@ -140,4 +140,15 @@ func (h *Handler) getExecutorsHistory(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, history)
+}
+
+func (h *Handler) CheckOrderStatus(c *gin.Context) {
+	id := c.Param("id")
+	data, err := h.services.CheckOrderStatus(id)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	wrapOkJSON(c, data)
 }

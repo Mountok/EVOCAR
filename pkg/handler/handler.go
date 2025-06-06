@@ -18,16 +18,11 @@ func NewHandler(services *service.Service) *Handler {
 	}
 }
 
-
-
-
-
-
 func (h *Handler) InitRoute() *gin.Engine {
 	router := gin.New()
 
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"}, // Разрешить только этот источник
+		AllowOrigins:     []string{"*"},                            // Разрешить только этот источник
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"}, // Разрешенные методы
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
@@ -41,32 +36,32 @@ func (h *Handler) InitRoute() *gin.Engine {
 	}
 
 	api := router.Group("/api")
-	{ 
-		api.GET("/conn",h.conn)   
-		api.GET("/orders",h.getOrders)
-		api.POST("/orders",h.createOrder)
-		api.GET("orders/by-phone",h.getOrdersByPhoneNumber)
-		api.PUT("/orders/:id/accept",h.acceptOrder)
-		api.PUT("/orders/:id/complete",h.completeOrder)
-		api.PUT("/orders/:id/cancel",h.cancleOrder)
-		api.GET("/orders/active",h.activeOrders)
+	{
+		api.GET("/conn", h.conn)
+		api.GET("/orders", h.getOrders)
+		api.POST("/orders", h.createOrder)
+		api.GET("orders/by-phone", h.getOrdersByPhoneNumber)
+		api.PUT("/orders/:id/accept", h.acceptOrder)
+		api.PUT("/orders/:id/complete", h.completeOrder)
+		api.PUT("/orders/:id/cancel", h.cancleOrder)
+		api.GET("/orders/active", h.activeOrders)
+		api.GET("/orders/check/:id", h.CheckOrderStatus)
 
 		executors := api.Group("/executors")
 		{
-			executors.GET("/history",h.getExecutorsHistory)
+			executors.GET("/history", h.getExecutorsHistory)
 		}
 
 	}
 
+	return router
+}
 
-	return router 
-} 
-
-func (h *Handler) conn(c * gin.Context) {
+func (h *Handler) conn(c *gin.Context) {
 	id, _ := c.Get(userCtx)
 	res := h.services.Conn.Conn()
-	c.JSON(http.StatusOK,map[string]interface{}{
+	c.JSON(http.StatusOK, map[string]interface{}{
 		"connection": res,
-		"userId": id,
+		"userId":     id,
 	})
 }

@@ -10,9 +10,12 @@ CREATE TABLE users
 CREATE TABLE orders
 (
     id serial not null primary key,
-    latitude float,
-    longitude float,
-    location varchar(255),
+    from_latitude float,
+    from_longitude float,
+    from_location varchar(255),
+    to_latitude float,
+    to_longitude float,
+    to_location varchar(255),
     typeOfOrder varchar(255) not null,
     typeOfAuto varchar(255) not null,
     numberOfClient varchar(255) not null,

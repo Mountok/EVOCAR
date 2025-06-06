@@ -16,14 +16,17 @@ func NewOrdersPostgres(db *sqlx.DB) *OrdersPostgres {
 }
 
 func (r *OrdersPostgres) CreateOrder(order models.Order) (int, error) {
-	query := `INSERT INTO orders (latitude, longitude, location, typeOfOrder, numberOfClient,typeOfAuto, status)
-			 VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`
+	query := `INSERT INTO orders (from_latitude, from_longitude, from_location,to_latitude, to_longitude, to_location, typeOfOrder, numberOfClient,typeOfAuto, status)
+			 VALUES ($1, $2, $3, $4, $5, $6, $7,$8, $9, $10) RETURNING id`
 
 	var id int
 	err := r.db.QueryRow(query,
-		order.Latitude,
-		order.Longitude,
-		order.Location,
+		order.FromLatitude,
+		order.FromLongitude,
+		order.FromLocation,
+		order.ToLatitude,
+		order.ToLongitude,
+		order.ToLocation,
 		order.TypeOfOrder,
 		order.NumberOfClient,
 		order.TypeOfAuto,
@@ -91,7 +94,7 @@ func (r *OrdersPostgres) CancleOrder(id string) error {
 
 func (r *OrdersPostgres) GetOrdersByPhoneNumber(phoneNumber string) ([]models.Order, error) {
 	var orders []models.Order
-	query := `SELECT id, latitude, longitude, location, typeOfOrder, numberOfClient, status, created_at
+	query := `SELECT id, from_latitude, from_longitude, from_location,to_latitude, to_longitude, to_location, typeOfOrder,typeOfAuto, numberOfClient, status, created_at
               FROM orders WHERE numberOfClient = $1`
 
 	err := r.db.Select(&orders, query, phoneNumber)
@@ -122,4 +125,24 @@ func (r *OrdersPostgres) GetExecutorsHistory(phoneNumber string) ([]models.Order
 	}
 
 	return orders, nil
+}
+
+func (r *OrdersPostgres) CheckOrderStatus(orderId string) (string, error) {
+	query := `SELECT status FROM orders WHERE id = $1`
+	var status []string
+	err := r.db.Select(&status, query, orderId)
+	if err != nil {
+		return "", err
+	}
+	return status[0], nil
+}
+
+func (r *OrdersPostgres) GetOrderExecutorById(id int) (models.ExecutorHistory, error) {
+	var executor []models.ExecutorHistory
+	query := `SELECT id, order_id, executor_number, created_at FROM executors_orders_history WHERE order_id = $1`
+	err := r.db.Select(&executor, query, id)
+	if err != nil {
+		return models.ExecutorHistory{}, err
+	}
+	return executor[0], nil
 }
